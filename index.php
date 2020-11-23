@@ -6,6 +6,6 @@
     <title>Index</title>
 </head>
 <body>
-    <h1><?php echo 'Homepage' ?></h1>
+    <h1><?= 'Homepage' ?></h1>
 </body>
 </html>
