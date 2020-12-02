@@ -1,11 +1,28 @@
 <?php
 
 use \DateTime;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
+
 
 require __DIR__.'/vendor/autoload.php';
 
-dump($_POST);
+// instanciation du chargeur de templates
+$loader = new FilesystemLoader(__DIR__.'/templates');
 
+// instanciation du moteur de template
+$twig = new Environment($loader, [
+    // activation du mode debug
+    'debug' => true,
+    // activation du mode de variables strictes
+    'strict_variables' => true,
+]);
+
+// chargement de l'extension DebugExtension
+$twig->addExtension(new DebugExtension());
+
+// traitement des données
 $errors = [];
 
 if ($_POST) {
@@ -46,38 +63,8 @@ if ($_POST) {
     }
 }
 
-?><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form-Validation</title>
-</head>
-<body>
-    <form action="" method="post" novalidate>  <!-- novalidate outrepasse required dans input -->
-        <div>
-            <?php if (isset($errors['login'])): ?>
-                <?= $errors['login'] ?>
-            <?php endif ?>
-        </div>
-        <div>
-            <input type="text" name="login" placeholder="login" required>
-        </div>
-        <?php if (isset($errors['year'])): ?>
-                <?= $errors['year'] ?>
-            <?php endif ?>
-        <div>
-            <input type="number" name="year" placeholder="year" required>
-        </div>
-        <?php if (isset($errors['email'])): ?>
-                <?= $errors['email'] ?>
-            <?php endif ?>
-        <div>
-            <input type="email" name="email" placeholder="email" required>
-        </div>
-        <div>
-            <button type="submit">valider</button>
-        </div>
-    </form>
-</body>
-</html>
+// affichage du rendu d'un template
+echo $twig->render('form-validation.html.twig', [
+    // transmission de données au template
+    'errors' => $errors,
+]);
